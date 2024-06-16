@@ -1,23 +1,18 @@
 package controller;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.logging.Logger;
-
 import entity.cart.Cart;
 import entity.cart.CartMedia;
-import common.exception.InvalidDeliveryInfoException;
 import entity.invoice.Invoice;
 import entity.media.Media;
 import entity.order.Order;
 import entity.order.OrderMedia;
 import subsystem.InterbankInterface;
 import subsystem.InterbankSubsystem;
-import views.screen.popup.PopupScreen;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.logging.Logger;
 
 public class PlaceOrderController extends BaseController{
 
@@ -60,7 +55,7 @@ public class PlaceOrderController extends BaseController{
     public Invoice createInvoice(Order order) throws SQLException {
         this.interbankInterface = new InterbankSubsystem();
         String id = this.interbankInterface.getUrlPayOrder(order.getAmount() + calculateShippingFee(order));
-        System.out.println(id);
+        //System.out.println(id);
         Invoice invoice = new Invoice(order, id);
         invoice.saveInvoice();
         return invoice;
@@ -88,41 +83,31 @@ public class PlaceOrderController extends BaseController{
         HashMap<String, String> deliveryInfo = order.getDeliveryInfo();
         String province = "";
         if(deliveryInfo.get("province") != null) province = deliveryInfo.get("province");
-        int fees = 0;
+        int fees = 25;
 
-        if(order.getAmount() < 100) {
-            double maxWeigh = maxWeigh(order);
-            switch (province) {
-                case "Hồ Chí Minh":
-                case "Hà Nội":
-                    if(maxWeigh <= 3.0){
-                        fees = 22;
-                    }
-                    else {
-                        fees = (int) (22 + (maxWeigh - 3.0)*5);
-                    }
-                    break;
-                default:
-                    if(maxWeigh <= 0.5){
-                        fees = 30;
-                    }
-                    else {
-                        fees = (int) (30 + (maxWeigh - 0.5)*5);
-                    }
-                    break;
-            }
-        }
+//        if(order.getAmount() < 100) {
+//            double maxWeigh = maxWeigh(order);
+//            switch (province) {
+//                case "Hồ Chí Minh":
+//                case "Hà Nội":
+//                    if(maxWeigh <= 3.0){
+//                        fees = 22;
+//                    }
+//                    else {
+//                        fees = (int) (22 + (maxWeigh - 3.0)*5);
+//                    }
+//                    break;
+//                default:
+//                    if(maxWeigh <= 0.5){
+//                        fees = 30;
+//                    }
+//                    else {
+//                        fees = (int) (30 + (maxWeigh - 0.5)*5);
+//                    }
+//                    break;
+//            }
+//        }
         LOGGER.info("Order Amount: " + order.getAmount() + " -- Shipping Fees: " + fees);
         return fees;
-    }
-
-    private double maxWeigh(Order order){
-        double max = 0;
-        for(Object object: order.getlstOrderMedia()){
-            OrderMedia orderMedia = (OrderMedia) object;
-            Media media = (Media) orderMedia.getMedia();
-            max = Math.max(max, media.getWeigh());
-        }
-        return max;
     }
 }

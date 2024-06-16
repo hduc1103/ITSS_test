@@ -71,7 +71,14 @@ public class MediaHandler extends FXMLScreenHandler{
                 media.setQuantity(media.getQuantity() - spinnerChangeNumber.getValue());
                 mediaAvail.setText(String.valueOf(media.getQuantity()));
                 // Content coupling
-                home.getNumMediaCartLabel().setText(String.valueOf(cart.getTotalMedia() + " media"));
+                int totalItems = cart.getTotalMedia();
+                String itemLabel;
+                if (totalItems == 1 || totalItems==0) {
+                    itemLabel = " item";
+                } else {
+                    itemLabel = " items";
+                }
+                home.getNumMediaCartLabel().setText(totalItems + itemLabel);
                 PopupScreen.success("The media " + media.getTitle() + " added to Cart");
             } catch (MediaNotAvailableException exp) {
                 try {

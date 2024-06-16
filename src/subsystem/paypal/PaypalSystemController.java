@@ -18,7 +18,7 @@ public class PaypalSystemController {
 
     private static final String PAY_COMMAND = "pay";
     private static final String VERSION = "1.0.0";
-    private PaypalBoundary paypalBoundary = new PaypalBoundary();
+    private PaypalPayBoundary paypalBoundary = new PaypalPayBoundary();
 
     public PaymentTransaction payOrder(Invoice invoice, String contents) throws IOException, SQLException {
 
@@ -52,23 +52,36 @@ public class PaypalSystemController {
     public String getUrlPayOrder(int amount) {
         String jsonString = paypalBoundary.createOrder(amount);
 
-        if (jsonString == null) return null;
-
-        JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-
-        // Check if the key "id" exists and is not null
-        if (jsonObject.has("id") && !jsonObject.get("id").isJsonNull()) {
-            String id = jsonObject.get("id").getAsString();
-            return id;
-        } else {
-            // Log the issue and return null or throw a custom exception
-            System.out.println("JSON response does not contain 'id': " + jsonString);
+        if (jsonString == null) {
+            // Log the issue with null response from createOrder
+            System.out.println("Response from createOrder is null.");
             return null;
         }
+
+        JsonObject jsonObject;
+        try {
+            jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
+        } catch (Exception e) {
+            // Log if there's an issue with parsing the JSON
+            System.out.println("Failed to parse JSON string: " + jsonString);
+            e.printStackTrace();
+            return null;
+        }
+
+        // Log the JsonObject to understand its structure
+        System.out.println("Parsed JsonObject: " + jsonObject);
+
+        // Check if the id is present in the JsonObject
+        if (!jsonObject.has("id") || jsonObject.get("id").isJsonNull()) {
+            // Log that the id is missing or null
+            System.out.println("The JsonObject does not contain a valid 'id': " + jsonObject);
+            return null;
+        }
+
+        // Safely retrieve the id
+        String id = jsonObject.get("id").getAsString();
+        return id;
     }
-
-
-
     private String extractRefundLink(String jsonResponse) {
         JsonObject jsonOrder = JsonParser.parseString(jsonResponse).getAsJsonObject();
 
