@@ -58,7 +58,5 @@ public class ResultScreenHandler extends BaseScreenHandler {
 	void confirmPayment(MouseEvent event) throws IOException {
 		setHomeScreenHandler(new HomeScreenHandler(this.stage, Configs.HOME_PATH));
 		homeScreenHandler.show();
-
 	}
-
 }

@@ -16,6 +16,7 @@ import views.screen.BaseScreenHandler;
 import views.screen.invoice.InvoiceScreenHandler;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class PaymentScreenHandler extends BaseScreenHandler {
 	public Response response;
@@ -60,7 +61,7 @@ public class PaymentScreenHandler extends BaseScreenHandler {
 				response = new Response(newValue);
 				//System.out.println(invoice.getAmount());
 				//System.out.println("Amount VNPay: "+ response.getVnp_Amount());
-				if(response.getVnp_ResponseCode()=="00"){
+				if(Objects.equals(response.getVnp_ResponseCode(), "00")){
 					try {
 						paymentController.emptyCart();
 						System.out.println("Successful Payment");
