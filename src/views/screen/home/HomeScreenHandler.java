@@ -8,12 +8,7 @@ import entity.cart.Cart;
 import entity.media.Media;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SplitMenuButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -98,12 +93,7 @@ public class HomeScreenHandler extends BaseScreenHandler implements Initializabl
     @Override
     public void show() {
         int itemCount = Cart.getCart().getListMedia().size();
-        String itemLabel;
-        if (itemCount == 1 || itemCount == 0) {
-            itemLabel = " item";
-        } else {
-            itemLabel = " items";
-        }
+        String itemLabel = (itemCount == 1 || itemCount == 0) ? " item" : " items";
         numMediaInCart.setText(itemCount + itemLabel);
         super.show();
     }
@@ -162,7 +152,7 @@ public class HomeScreenHandler extends BaseScreenHandler implements Initializabl
 
     private void sortMediaByPrice(MouseEvent event) {
         List<MediaHandler> sortedItems = homeItems.stream()
-                .sorted((mh1, mh2) -> Double.compare(mh1.getMedia().getPrice(), mh2.getMedia().getPrice()))
+                .sorted(Comparator.comparingDouble(mh -> mh.getMedia().getPrice()))
                 .collect(Collectors.toList());
 
         this.displayedItems = sortedItems;
@@ -232,7 +222,6 @@ public class HomeScreenHandler extends BaseScreenHandler implements Initializabl
             }
         });
     }
-
 
     public void setImage() {
         // fix image path caused by fxml

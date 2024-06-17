@@ -84,30 +84,17 @@ public class PlaceOrderController extends BaseController{
         String province = "";
         if(deliveryInfo.get("province") != null) province = deliveryInfo.get("province");
         int fees = 25;
-
-//        if(order.getAmount() < 100) {
-//            double maxWeigh = maxWeigh(order);
-//            switch (province) {
-//                case "Hồ Chí Minh":
-//                case "Hà Nội":
-//                    if(maxWeigh <= 3.0){
-//                        fees = 22;
-//                    }
-//                    else {
-//                        fees = (int) (22 + (maxWeigh - 3.0)*5);
-//                    }
-//                    break;
-//                default:
-//                    if(maxWeigh <= 0.5){
-//                        fees = 30;
-//                    }
-//                    else {
-//                        fees = (int) (30 + (maxWeigh - 0.5)*5);
-//                    }
-//                    break;
-//            }
-//        }
         LOGGER.info("Order Amount: " + order.getAmount() + " -- Shipping Fees: " + fees);
         return fees;
+    }
+
+    private double maxWeigh(Order order){
+        double max = 0;
+        for(Object object: order.getlstOrderMedia()){
+            OrderMedia orderMedia = (OrderMedia) object;
+            Media media = (Media) orderMedia.getMedia();
+            max = Math.max(max, media.getWeight());
+        }
+        return max;
     }
 }
