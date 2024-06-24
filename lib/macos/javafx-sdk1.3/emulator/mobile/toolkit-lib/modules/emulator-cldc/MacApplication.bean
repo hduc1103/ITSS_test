@@ -1,7 +1,0 @@
-#.class: com.apple.eawt.Application
-
-#enabledAboutMenu: false
-
-.class=com.sun.jme.toolkit.mac.ApplicationExtension
-
-aboutAction: ui-actions-OpenAboutDialog
